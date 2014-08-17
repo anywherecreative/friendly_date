@@ -29,7 +29,7 @@ function updateDates() {
 			$(this).text('Just Now');
 		}
 		else if(diff >= 60 && diff < HOUR) {
-			$(this).text('About ' + Math.round(diff/60) + ' Minute' + (((Math.round(diff/60)) > 1) ? 's':'') + ' ago');
+			$(this).text('About ' + Math.floor(diff/60) + ' Minute' + (((Math.round(diff/60)) > 1) ? 's':'') + ' ago');
 		}
 		else if(diff >= HOUR && diff < DAY) {
 			$(this).text('About ' + Math.round(diff/HOUR) + ' Hour' + (((Math.round(diff/HOUR)) > 1) ? 's':'') + ' ago');
