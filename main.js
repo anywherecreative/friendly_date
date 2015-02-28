@@ -16,15 +16,18 @@ You should have received a copy of the GNU General Public License along with thi
 var HOUR = 3600;
 var DAY = 86400;
 var WEEK = 604800;
+var ADD_TIME = true;
 var varience = server - Math.round(new Date().getTime()/1000);
 $(document).ready(function() {
 	updateDates();
-	setInterval("updateDates()",60000); //once a minute
+	setInterval(updateDates,1000); //once a minute
 });
 function updateDates() {
+	console.log("run");
 	var timestamp = Math.round(new Date().getTime()/1000)+varience;
 	$('[data-roll="time"]').each(function() {
 		var diff =timestamp - parseInt($(this).data('time'));
+		var jdate = new Date(parseInt($(this).data('time')*1000));
 		if(diff < 60) {
 			$(this).text('Just Now');
 		}
@@ -35,7 +38,15 @@ function updateDates() {
 			$(this).text('About ' + Math.round(diff/HOUR) + ' Hour' + (((Math.round(diff/HOUR)) > 1) ? 's':'') + ' ago');
 		}
 		else if(diff >= DAY && diff < WEEK) {
-			$(this).text('About ' + Math.round(diff/DAY) + ' day' + (((Math.round(diff/DAY)) > 1) ? 's':'') + ' ago');
+			if(Math.round(diff/DAY) ==1) {
+				$(this).text('Yesterday');
+			}
+			else {
+				$(this).text('About ' + Math.round(diff/DAY) + ' day' + (((Math.round(diff/DAY)) > 1) ? 's':'') + ' ago');
+			}
+			if(ADD_TIME) {
+				$(this).text($(this).text()+addTime(jdate));
+			}
 		}
 		else {
 			// show the date
@@ -86,5 +97,28 @@ function textDate(timestamp) {
 	}
 	result += " " + theDate.getDate(); //day of the week
 	result += ", "+theDate.getFullYear();
+	if(ADD_TIME) {
+		result+= addTime(theDate)
+	}
 	return result;
+}
+function addTime(jdate) {
+	var ct;
+	var dayPart = "AM";
+	var minutes = "";
+	if (jdate.getHours() > 12) {
+		dayPart = "PM";
+		ct = (jdate.getHours() -12);
+	}
+	else {
+		ct = jdate.getHours();
+	}
+	if(jdate.getMinutes() < 10) {
+		minutes = "0" + jdate.getMinutes();
+	}
+	else {
+		minutes = jdate.getMinutes();
+	}
+	ct += ":" + minutes + " " + dayPart;
+	return " at " + ct;
 }
